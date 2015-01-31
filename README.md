@@ -1,6 +1,6 @@
 # GAIA
 GAIA was developed during the software engineering lab at the University of Passau by 5 students.
-GAIA is showing the whole world in the 3d mode and after zooming in, the world can be discovered with maps from the OpenStreetMap Project (http://www.openstreetmap.org/#map=5/51.500/-0.100).
+GAIA is showing the whole world in the 3d mode and after zooming in, the world can be discovered with maps from the OpenStreetMap Project (http://www.openstreetmap.org/).
 It is possible to search for locations , set markers on visited locations, select points of interests from various categories and to see the current weather information for the visited locations. The screenshot function enables the user to extract certain areas with the select additional informations.
 
 The rendering of the map tiles was down with the Java OpenGL (JOGL) binding and the application was written in Java with the Swing library.
