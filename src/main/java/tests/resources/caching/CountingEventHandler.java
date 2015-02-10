@@ -16,8 +16,9 @@ public class CountingEventHandler<R extends DataResource> implements ResourceCac
     public int purgeHandledCount;
 
     @Override
-    public void handleResourceDump(R resource) {
+    public boolean handleResourceDump(R resource) {
         dumpHandledCount++;
+        return true;
     }
 
     @Override

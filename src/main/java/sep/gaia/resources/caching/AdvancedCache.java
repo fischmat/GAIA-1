@@ -137,7 +137,11 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
         for (ResourceCachingHandler preprocessor : preprocessors) {
             for(K resourceKey : index.keySet()) {
                 CacheEntry<R> entry = index.get(resourceKey);
-                preprocessor.handleResourceDump(entry.getResource());
+
+                // The handler might advise not to serialize the resource, so remove it from index before dumping:
+                if(!preprocessor.handleResourceDump(entry.getResource())) {
+                    removeResource(resourceKey);
+                }
             }
         }
         preprocessorsInUseLock.unlock();
@@ -458,5 +462,13 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
         long result = misses;
         missesInUseLock.unlock();
         return result;
+    }
+
+    public CacheRemovalStrategy getRemovalStrategy() {
+        return removalStrategy;
+    }
+
+    public void setRemovalStrategy(CacheRemovalStrategy removalStrategy) {
+        this.removalStrategy = removalStrategy;
     }
 }

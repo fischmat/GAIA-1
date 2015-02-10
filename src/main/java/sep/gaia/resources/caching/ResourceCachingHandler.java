@@ -16,8 +16,10 @@ public interface ResourceCachingHandler<R extends DataResource> {
      * Called by the {@link AdvancedCache} before the caching of the
      * resource is done.
      * @param resource The resource that will be cached shortly.
+     * @return Returns true if the given resource should be dumped. IF this method returns false,
+     * the cache will remove this resource from its index before dumping.
      */
-    public void handleResourceDump(R resource);
+    public boolean handleResourceDump(R resource);
 
     /**
      * Called by the {@link AdvancedCache} after the reading from dump of the
