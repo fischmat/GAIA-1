@@ -226,8 +226,10 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
                     currentTime = Math.max(currentTime, entry.getLastUsageTime());
                 }
 
-
-                preprocessor.handleResourceRead(entry.getResource());
+                // Do further processing of the read resource and let the handler decide whether to keep it:
+                if(!preprocessor.handleResourceRead(entry.getResource())) {
+                    removeResource(resourceKey);
+                }
             }
             // We iterated over all resources once, so the clock is up to date:
             firstIteration = false;

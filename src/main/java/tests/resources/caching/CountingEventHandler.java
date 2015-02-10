@@ -22,8 +22,9 @@ public class CountingEventHandler<R extends DataResource> implements ResourceCac
     }
 
     @Override
-    public void handleResourceRead(R resource) {
+    public boolean handleResourceRead(R resource) {
         readHandledCount++;
+        return true;
     }
 
     @Override
