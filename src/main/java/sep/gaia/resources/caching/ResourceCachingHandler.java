@@ -13,21 +13,21 @@ import sep.gaia.resources.DataResource;
 public interface ResourceCachingHandler<R extends DataResource> {
 
     /**
-     * Called by the {@link AbstractCache} before the caching of the
+     * Called by the {@link AdvancedCache} before the caching of the
      * resource is done.
      * @param resource The resource that will be cached shortly.
      */
     public void handleResourceDump(R resource);
 
     /**
-     * Called by the {@link AbstractCache} after the reading from dump of the
+     * Called by the {@link AdvancedCache} after the reading from dump of the
      * resource is done.
      * @param resource The resource that was read.
      */
     public void handleResourceRead(R resource);
 
     /**
-     * Called by the {@link AbstractCache} before the resource is removed from cache
+     * Called by the {@link AdvancedCache} before the resource is removed from cache
      * by the caches {@link CacheRemovalStrategy}.
      * This is useful if the resources have allocated memory via JNI that must be freed separately.
      * @param resource

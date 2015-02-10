@@ -5,7 +5,7 @@ import sep.gaia.resources.DataResource;
 import java.io.Serializable;
 
 /**
- * An entry of an {@link sep.gaia.resources.caching.AbstractCache}s index holding
+ * An entry of an {@link AdvancedCache}s index holding
  * additional meta-data, that can be used by {@link sep.gaia.resources.caching.CacheRemovalStrategy}s
  * to decide wether to keep or purge a cached resource.
  */

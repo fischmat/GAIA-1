@@ -26,7 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Matthias Fisch
  */
-public abstract class AbstractCache<K extends Serializable, R extends DataResource> {
+public class AdvancedCache<K extends Serializable, R extends DataResource> {
 
     /**
      * The association of the keys to identify the resources with the respective resoures.
@@ -89,11 +89,17 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
      */
     private Lock missesInUseLock = new ReentrantLock();
 
+
+    /**
+     * Initializes the cache with realtime-compression turned off and no removal strategy.
+     */
+    public AdvancedCache() {}
+
     /**
      * Initializes the cache with realtime-compression turned off.
      * @param strategy The removal strategy to manage the caches size.
      */
-    public AbstractCache(CacheRemovalStrategy strategy) {
+    public AdvancedCache(CacheRemovalStrategy strategy) {
         this.removalStrategy = strategy;
     }
 
@@ -102,7 +108,7 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
      * @param useDumpRealtimeCompression Whether to use LZO compression algorithm when writing the cache-index via
      * {@link #dump(java.io.OutputStream)} or overriding methods.
      */
-    public AbstractCache(CacheRemovalStrategy removalStrategy, boolean useDumpRealtimeCompression) {
+    public AdvancedCache(CacheRemovalStrategy removalStrategy, boolean useDumpRealtimeCompression) {
         this.useDumpRealtimeCompression = useDumpRealtimeCompression;
         this.removalStrategy = removalStrategy;
     }
@@ -122,6 +128,9 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
         OutputStream picked = convertOutputStream(out);
         ObjectOutputStream serializedOutput = new ObjectOutputStream(picked);
 
+        // Lock the index for exclusive use by this thread:
+        indexInUseLock.lock();
+
         // Maybe the resources can not be serialized directly and thus additional work must be done by the preprocessors:
         preprocessorsInUseLock.lock();
 
@@ -133,9 +142,6 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
         }
         preprocessorsInUseLock.unlock();
 
-
-        // Lock the index for exclusive use by this thread:
-        indexInUseLock.lock();
 
         // Serialize and write to the stream:
         serializedOutput.writeObject(index);
@@ -197,9 +203,6 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
             throw new IllegalArgumentException(e.getMessage());
         }
 
-        // Free the lock again;
-        indexInUseLock.unlock();
-
         // Maybe the resources contain members not that could not be serialized
         // and thus additional work must be done by the preprocessors:
         preprocessorsInUseLock.lock();
@@ -226,7 +229,10 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
             firstIteration = false;
             currentTimeInUseLock.unlock();
         }
+
+        // Free the locks again;
         preprocessorsInUseLock.unlock();
+        indexInUseLock.unlock();
     }
 
     /**
@@ -299,6 +305,11 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
         return !isAlreadyContained;
     }
 
+    /**
+     * Removes the resource identified by <code>key</code> and calls the respective event of the handlers.
+     * @param key The key of the resource that should be removed.
+     * @return True if an associated resource was found and successfully removed.
+     */
     public boolean removeResource(K key) {
         // The index will be in use for a moment:
         indexInUseLock.lock();
@@ -393,6 +404,17 @@ public abstract class AbstractCache<K extends Serializable, R extends DataResour
      */
     public Map<K, CacheEntry<R>> getIndex() {
         return index;
+    }
+
+    /**
+     * Returns the number of key-resources associations currently in cache.
+     * @return Number of cache entries.
+     */
+    public int getCachedResourcesCount() {
+        indexInUseLock.lock();
+        int count = index.size();
+        indexInUseLock.unlock();
+        return count;
     }
 
     /**

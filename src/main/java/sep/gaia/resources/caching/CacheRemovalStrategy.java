@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Implementation of this interface should remove entries of the caches its assigned to using a
  * certain strategy.
- * This must be done by implementing {@link #manageCache(sep.gaia.resources.caching.AbstractCache)} which is called
+ * This must be done by implementing {@link #manageCache(AdvancedCache)} which is called
  * on each insertion to a cache.
  */
 public interface CacheRemovalStrategy<K extends Serializable, R extends DataResource> {
@@ -19,5 +19,5 @@ public interface CacheRemovalStrategy<K extends Serializable, R extends DataReso
      * and should thus not further block execution as required.
      * @param cache The cache to be managed.
      */
-    public void manageCache(AbstractCache<K, R> cache);
+    public void manageCache(AdvancedCache<K, R> cache);
 }
