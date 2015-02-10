@@ -20,8 +20,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * as well as serialized dumping and reading of the caches data.
  * Also note that the classes methods are thread-safe and thus may block when called.
  *
- * @param <K> The type of objects used to identify the cached resources (e.g. {@link String})
- *            Note that this type must implement the <code>hashCode()</code> appropriate.
+ * @param <K> The type of objects used to identify the cached resources (e.g. {@link String}).
+ *            Note that this type must implement the <code>hashCode()</code> appropriately.
  * @param <R> The type of resources to handle within the cache.
  *
  * @author Matthias Fisch
@@ -116,7 +116,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
     /**
      * Serializes and writes the data to the given target specified by <code>out</code>.
      * This can be used to dump an image of the cache persistently.
-     * If LZO-realtime compression is used (cf. ), the serialized data will be compressed before being written
+     * If LZO-realtime compression is used (cf. {@link #isDumpRealtimeCompressionUsed()}), the serialized data will be compressed before being written
      * to the target stream.
      * Note, that the stream will neither be flushed or closed after writing the data, so its in the responsibility
      * of the caller to do so.
@@ -175,7 +175,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
      * read from <code>in</code>.
      * Note that all data currently held by the instance will be overwritten.
      * You must ensure that the data read next from <code>in</code> was originally written by {@link #dump(java.io.OutputStream)}
-     * or its overriding methods and that the {@link #useDumpRealtimeCompression} is the same as the data was written with.
+     * or its overriding methods and that the {@link #useDumpRealtimeCompression} is the same as when the data was written with.
      * @param in The source to read from.
      * @throws java.io.IOException Thrown if an error occurs while reading the data,
      * @throws IllegalArgumentException Thrown if the read data is not compliant to the data written by {@link #dump(java.io.OutputStream)}
@@ -250,6 +250,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
 
     /**
      * Returns the resource associated with <code>key</code>.
+     * If the resource is found the caches hit-counter will be incremented, else the miss-counter is incremented,
      * @param key The key of the resource to find.
      * @return The resource found or <code>null</code> if there is no resource associated with <code>key</code>.
      */

@@ -17,6 +17,8 @@
  */
 package sep.gaia.util;
 
+import java.io.Serializable;
+
 /**
  * Interface for a general 3-dimensional numerical vector. Every
  * implementing class should provide get and set methods for 3
@@ -26,6 +28,6 @@ package sep.gaia.util;
  * @author Max Witzelsperger
  *
  */
-public interface Vector3D {
+public interface Vector3D extends Serializable {
 
 }

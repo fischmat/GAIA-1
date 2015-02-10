@@ -1,7 +1,7 @@
 package sep.gaia.resources.caching.strategies;
 
 import sep.gaia.resources.DataResource;
-import sep.gaia.resources.caching.AbstractCache;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.resources.caching.CacheEntry;
 import sep.gaia.resources.caching.CacheRemovalStrategy;
 
@@ -9,14 +9,14 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * A Least-Recently-Used removal strategy to be used with a {@link sep.gaia.resources.caching.AbstractCache}.
+ * A Least-Recently-Used removal strategy to be used with a {@link sep.gaia.resources.caching.AdvancedCache}.
  * To prioritize entries their timestamp of their last usage will be compared.
  * This strategy supports two modes for calculating to amount of elements to be removed.
  * <ul>
  *     <li>With the {@link #keepFixedAmount} flag set, the number of elements will be at maximum the threshold (maybe more for short time).</li>
  *     <li>With the flag cleared, each time the threshold is exceeded, the least-recently-used {@link #removeByPercentage} elements will be removed.</li>
  * </ul>
- * Also this strategy supports limitation of entries to be inspected at most at each {@link #manageCache(sep.gaia.resources.caching.AbstractCache)} call in order
+ * Also this strategy supports limitation of entries to be inspected at most at each {@link #manageCache(sep.gaia.resources.caching.AdvancedCache)} call in order
  * to avoid performance issues.
  */
 public class LRURemovalStrategy<K extends Serializable, R extends DataResource> implements CacheRemovalStrategy<K, R> {
@@ -113,7 +113,7 @@ public class LRURemovalStrategy<K extends Serializable, R extends DataResource> 
     }
 
     @Override
-    public void manageCache(AbstractCache<K, R> cache) {
+    public void manageCache(AdvancedCache<K, R> cache) {
         // Get the caches index, all rights already granted:
         Map<K, CacheEntry<R>> index = cache.getIndex();
 

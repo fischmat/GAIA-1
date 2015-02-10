@@ -14,32 +14,6 @@ import static org.junit.Assert.*;
 
 public class AdvancedCacheTest {
 
-    /**
-     * Class counting how often a certain caching event has been invoked.
-     */
-    private static class CountingEventHandler implements ResourceCachingHandler<PointOfInterest> {
-
-        public int dumpHandledCount;
-
-        public int readHandledCount;
-
-        public int purgeHandledCount;
-
-        @Override
-        public void handleResourceDump(PointOfInterest resource) {
-            dumpHandledCount++;
-        }
-
-        @Override
-        public void handleResourceRead(PointOfInterest resource) {
-            readHandledCount++;
-        }
-
-        @Override
-        public void handleResourcePurged(PointOfInterest resource) {
-            purgeHandledCount++;
-        }
-    }
 
     private static int timesCacheManaged;
 
@@ -56,7 +30,7 @@ public class AdvancedCacheTest {
         orgCache.addResource(poi1.getKey(), poi1);
         orgCache.addResource(poi2.getKey(), poi2);
 
-        CountingEventHandler countingHandler = new CountingEventHandler();
+        CountingEventHandler<PointOfInterest> countingHandler = new CountingEventHandler<>();
         orgCache.addCachingPreprocessor(countingHandler);
 
         // Lets stream to a buffer in memory:
@@ -145,7 +119,7 @@ public class AdvancedCacheTest {
         cache.addResource(poi2.getKey(), poi2);
 
         // Add an counter, so we can check if events were fired:
-        CountingEventHandler countingHandler = new CountingEventHandler();
+        CountingEventHandler<PointOfInterest> countingHandler = new CountingEventHandler<>();
         cache.addCachingPreprocessor(countingHandler);
 
         // Remove first POI:
