@@ -513,4 +513,26 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
             this.compressionLevel = Deflater.DEFAULT_COMPRESSION;
         }
     }
+
+    /**
+     * Removes all entries from the caches index. The purge-event is called for each registered listener
+     * and resource.
+     */
+    public void clear() {
+        // Secure the preprocessors and the index from concurrent modification:
+        indexInUseLock.lock();
+        preprocessorsInUseLock.lock();
+
+        // Call the purge event on all listeners:
+        for (ResourceCachingHandler preprocessor : preprocessors) {
+            for (Map.Entry<K, CacheEntry<R>> entry : index.entrySet()) {
+                preprocessor.handleResourcePurged(entry.getValue().getResource());
+            }
+        }
+
+        index.clear();
+
+        preprocessorsInUseLock.unlock();
+        indexInUseLock.unlock();
+    }
 }
