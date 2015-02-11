@@ -67,19 +67,18 @@ public class SettingsWindow {
         JPanel cachePanel = new JPanel();
         //cachePanel.setLayout(new BoxLayout(cachePanel, BoxLayout.Y_AXIS));
         
-        JLabel cacheLabel = new JLabel("Maximaler Cache: ");
+        JLabel cacheLabel = new JLabel("Maximal gecachte Kartenkacheln: ");
         cachePanel.add(cacheLabel);
         
         JSlider maximumCache = new JSlider();
-        maximumCache.setMaximum(100);
+        maximumCache.setMaximum(50000);
         maximumCache.setMinimum(0);
         TileManager manager1 = (TileManager) ResourceMaster.getInstance().getResourceManager(TileManager.MANAGER_LABEL);
 		
 		TileCache cache = manager1.getCache();
         maximumCache.setValue((int) (cache.getMaximumSizeOnDisk() / MEGABYTE_TO_BYTE));
-        maximumCache.setMajorTickSpacing(10);
-        maximumCache.setMinorTickSpacing(1);
-        maximumCache.setPaintLabels(true);
+        maximumCache.setMajorTickSpacing(1000);
+        maximumCache.setMinorTickSpacing(1000);
         maximumCache.setPaintTicks(true);
         maximumCache.addChangeListener(new SliderListener(cacheSize));
    
@@ -89,12 +88,7 @@ public class SettingsWindow {
         cacheCleaner.addActionListener(new CacheSettingsListener(cacheSize));
         cachePanel.add(cacheCleaner);  
         settings.getContentPane().add(cachePanel, BorderLayout.PAGE_START);
-        
-        JLabel currentCacheSize = new JLabel("Aktueller Cache: ");
-        cachePanel.add(currentCacheSize);
-        
-        cachePanel.add(cacheSize);    
-        cachePanel.add(new JLabel("MB"));
+
         /*
         JPanel serverPanel = new JPanel();
         JLabel serverLabel = new JLabel("Tile-Server: ");
