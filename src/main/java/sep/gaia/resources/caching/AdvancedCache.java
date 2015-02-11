@@ -9,6 +9,10 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipException;
 
 /**
  * Defines a basic structure for instances caching resources ({@link sep.gaia.resources.DataResource}).
@@ -16,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * in any other way.
  * This class is meant to replace {@link sep.gaia.resources.Cache} and provides a more abstract and powerful way
  * to handle cached resources.
- * This class features dynamic compression of serialized data using the LZO compression algorithm (LZO1X),
+ * This class features dynamic compression of serialized data using the GZIP compression algorithm,
  * as well as serialized dumping and reading of the caches data.
  * Also note that the classes methods are thread-safe and thus may block when called.
  *
@@ -39,10 +43,16 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
     private Lock indexInUseLock = new ReentrantLock();
 
     /**
-     * Flag indicating whether to use LZO compression algorithm when writing the cache-index via
+     * Flag indicating whether to use GZIP compression algorithm when writing the cache-index via
      * {@link #dump(java.io.OutputStream)} or overriding methods.
      */
     private boolean useDumpRealtimeCompression;
+
+    /**
+     * Defines the compression level of the GZIP algorithm.
+     * Must be a integral value between 1 (fastest) and 9 (best).
+     */
+    private int compressionLevel;
 
     /**
      * This is the caches Lamport-time. This means that on each event when the time is requested, it is incremented.
@@ -105,8 +115,8 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
 
     /**
      * @param removalStrategy The removal strategy to manage the caches size.
-     * @param useDumpRealtimeCompression Whether to use LZO compression algorithm when writing the cache-index via
-     * {@link #dump(java.io.OutputStream)} or overriding methods.
+     * @param useDumpRealtimeCompression Whether to use GZIP compression algorithm when writing the cache-index via
+     * {@link #dump(java.io.OutputStream)} or overriding methods (using default compression level initially).
      */
     public AdvancedCache(CacheRemovalStrategy removalStrategy, boolean useDumpRealtimeCompression) {
         this.useDumpRealtimeCompression = useDumpRealtimeCompression;
@@ -116,7 +126,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
     /**
      * Serializes and writes the data to the given target specified by <code>out</code>.
      * This can be used to dump an image of the cache persistently.
-     * If LZO-realtime compression is used (cf. {@link #isDumpRealtimeCompressionUsed()}), the serialized data will be compressed before being written
+     * If GZIP-realtime compression is used (cf. {@link #isDumpRealtimeCompressionUsed()}), the serialized data will be compressed before being written
      * to the target stream.
      * Note, that the stream will neither be flushed or closed after writing the data, so its in the responsibility
      * of the caller to do so.
@@ -124,7 +134,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
      * @throws java.io.IOException Thrown when an error occurs while writing.
      */
     public void dump(OutputStream out) throws IOException {
-        // Convert the stream to a LZO-compressed one if needed:
+        // Convert the stream to a GZIP-compressed one if needed:
         OutputStream picked = convertOutputStream(out);
         ObjectOutputStream serializedOutput = new ObjectOutputStream(picked);
 
@@ -187,7 +197,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
      * or the other way around.
      */
     public void readFromDump(InputStream in) throws IOException, IllegalArgumentException {
-        // Convert the stream to a LZO-compressed one if needed:
+        // Convert the stream to a GZIP-compressed one if needed:
         InputStream picked = convertInputStream(in);
         ObjectInputStream deserializedInput = new ObjectInputStream(picked);
 
@@ -202,7 +212,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
                 throw new IllegalArgumentException("Read data is of incorrect type. (Required: Map<K, CacheEntry<R>>, Is: " + readObject.getClass().getSimpleName());
             }
 
-        } catch (ClassNotFoundException e)  {
+        } catch (ClassNotFoundException | ZipException e)  {
             // Convert the exception to a more meaningful one:
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -343,41 +353,51 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
     }
 
     /**
-     * Converts the given output stream to a realtime-compressed (LZO1X) output-stream if
+     * Converts the given output stream to a realtime-compressed (GZIP) output-stream if
      * {@link #useDumpRealtimeCompression} is set. Otherwise this method will return the original stream.
      * @param original The stream to eventually convert.
      * @return The appropriately converted stream.
      */
     private OutputStream convertOutputStream(OutputStream original) {
-        // TODO: Link shevek/lzo-java and uncomment code below:
         if(useDumpRealtimeCompression) {
-            /*
-            LzoAlgorithm algorithm = LzoAlgorithm.LZO1X;
-            LzoCompressor compressor = LzoLibrary.getInstance().newCompressor(algorithm, null);
-            return new LzoOutputStream(out, compressor, 256);
-             */
-            return original;
+            OutputStream compressed;
+            try {
+                // Create compressed stream and set compression-level via anonymous constructor:
+                compressed = new GZIPOutputStream(original) {
+                    {
+                        def.setLevel(compressionLevel);
+                    }
+                };
+            } catch (IOException e) {
+                // Use the original stream on error:
+                return original;
+            }
+
+            return compressed;
         } else {
             return original;
         }
     }
 
     /**
-     * Converts the given input stream to a realtime-compressed (LZO1X) input-stream if
+     * Converts the given input stream to a realtime-compressed (GZIP) input-stream if
      * {@link #useDumpRealtimeCompression} is set. Otherwise this method will return the original stream.
      * @param original The stream to eventually convert.
      * @return The appropriately converted stream.
      */
     private InputStream convertInputStream(InputStream original) {
         InputStream converted = null;
-        // TODO: Link shevek/lzo-java and uncomment code below:
         if(useDumpRealtimeCompression) {
-            /*
-             LzoAlgorithm algorithm = LzoAlgorithm.LZO1X;
-             LzoDecompressor decompressor = LzoLibrary.getInstance().newDecompressor(algorithm, null);
-             return new LzoInputStream(in, decompressor);
-             */
-            return original;
+            InputStream decompressed;
+            try {
+                decompressed = new GZIPInputStream(original);
+
+            } catch (IOException e) {
+                // Use the original stream on error:
+                return original;
+            }
+
+            return decompressed;
         } else {
             return original;
         }
@@ -435,7 +455,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
     }
 
     /**
-     * @return True, if LZO compression is used when writing the caches data via {@link #dump(java.io.OutputStream)} or
+     * @return True, if GZIP compression is used when writing the caches data via {@link #dump(java.io.OutputStream)} or
      * its overriding methods. Otherwise false.
      */
     public boolean isDumpRealtimeCompressionUsed() {
@@ -472,5 +492,25 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
 
     public void setRemovalStrategy(CacheRemovalStrategy removalStrategy) {
         this.removalStrategy = removalStrategy;
+    }
+
+    /**
+     * @return The compression level used when compressing data while dumping the index.
+     */
+    public int getCompressionLevel() {
+        return compressionLevel;
+    }
+
+    /**
+     * Sets the compression level used when compressing data while dumping the index.
+     * @param compressionLevel The level of compression (in range 1,..,9), where 1 means fastest and 9 means best compression.
+     *                         If this parameter is not in range, the default compression level will be set.
+     */
+    public void setCompressionLevel(int compressionLevel) {
+        if(compressionLevel >= 1 && compressionLevel <= 9) {
+            this.compressionLevel = compressionLevel;
+        } else {
+            this.compressionLevel = Deflater.DEFAULT_COMPRESSION;
+        }
     }
 }
