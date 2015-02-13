@@ -29,7 +29,8 @@ public class Environment {
 	 * @author Matthias Fisch
 	 *
 	 */
-	public enum EnvVariable {LOG_FILE, // The path to the log-file. 
+	public enum EnvVariable {LOG_FILE, // The path to the log-file.
+							 SYSTEM_PATH_SEPARATOR, // The token used by the system to separate parts of a file-location
 							 POI_CATEGORY_FILE, // The path to the POI-category-file.
 							 POI_CATEGORY_FILE_SCHEMA, // The path to the schema for the pois category-file
 							 KEY_SYMBOL_MAP_FILE, // The path to the file holding symbol-mapping
@@ -43,7 +44,9 @@ public class Environment {
 							 TILE_CACHE_INDEX_FILE, // The path the the schema for the persistent caches index-file
 							 TILE_CACHE_INDEX_FILE_SCHEMA, // The path to the schema for the persistent caches index-file
 							 SCREENSHOT_FOLDER, // The path to the location of saved screenshots.
-							 CACHE_ROOT_DIR, // The path to the caches root-directory
+							 CACHE_ROOT_DIR,
+							 TILE_CACHE_ROOT_DIR, // The path to the tile-caches root-directory (where slippy-maps path starts)
+							 TILE_CACHE_INDEX_DUMP, // The location of the tilecaches index dump.
 							 WEATHER_FONT, // Path to the weather font which is used by writing weather information the screen.
 							 WEATHER_ICONS_DAY, // Weather icons for the day.
 							 WEATHER_ICONS_NIGHT, // Weather icons for the night.
@@ -107,6 +110,8 @@ public class Environment {
 	public String getString(EnvVariable var) {
 		switch(var) {
 		case LOG_FILE: return "log.txt";
+		case TILE_CACHE_ROOT_DIR: return "cache/tiles/";
+		case SYSTEM_PATH_SEPARATOR: return System.getProperty("file.separator");
 		case POI_CATEGORY_FILE: return "config" + System.getProperty("file.separator") + "categories.xml";
 		case POI_CATEGORY_FILE_SCHEMA: return "config" + System.getProperty("file.separator") + "categories.xsd";
 		case KEY_SYMBOL_MAP_FILE: return "symbols" + System.getProperty("file.separator") + "symbolmap.xml";
