@@ -17,6 +17,9 @@
  */
 package sep.gaia.resources;
 
+import sep.gaia.resources.caching.AdvancedCache;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -62,7 +65,7 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 	/**
 	 * The cache preferably used for resource-access.
 	 */
-	private Cache<R> cache;
+	private AdvancedCache<String, R> cache;
 
 	/**
 	 * A list of workers processing a query.
@@ -100,7 +103,7 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 	 * @param splitter An object for splitting queries into smaller parts for asynchronous processing.
 	 * If no splitting is required this member must be <code>null</code>.
 	 */
-	public Loader(Cache<R> cache, WorkerFactory<Q, R> workerFactory, QuerySplitter<Q> splitter) {
+	public Loader(AdvancedCache<String, R> cache, WorkerFactory<Q, R> workerFactory, QuerySplitter<Q> splitter) {
 		super();
 		this.cache = cache;
 		this.workerFactory = workerFactory;
@@ -188,7 +191,7 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 								// Add the results to cache:
 								if(cache != null) {
 									for(R result : results) {
-										cache.add(result);
+										cache.addResource(result.getKey(), result);
 									}
 								}
 								
@@ -207,11 +210,6 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 						}
 
 						try {
-							// Remove entries from cache if necessary:
-							if(cache != null) {
-								cache.manage();
-							}
-							
 							// Wait certain amount of time until next check:
 							sleep(DELAY_WAIT_FOR_WORKER);
 							
@@ -323,7 +321,7 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 
 	/**
 	 * Adds an listener to be notified about newly loaded data.
-	 * @param The listener to add.
+	 * @param listener The listener to add.
 	 */
 	public void addListener(LoaderEventListener<R> listener) {
 		// Add to the list of objects to notify:
@@ -332,7 +330,7 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 
 	/**
 	 * Removes an listener to be notified about newly loaded data.
-	 * @param The listener to remove.
+	 * @param listener The listener to remove.
 	 */
 	public void removeListener(LoaderEventListener<R> listener) {
 		// Remove from the list of objects to notify:
@@ -373,7 +371,7 @@ public final class Loader<Q extends Query, R extends DataResource> extends Threa
 		super.interrupt();
 	}
 
-	public Cache<R> getCache() {
+	public AdvancedCache<String, R> getCache() {
 		return cache;
 	}
 }

@@ -17,6 +17,9 @@
  */
 package sep.gaia.resources;
 
+import sep.gaia.resources.caching.AdvancedCache;
+import sep.gaia.resources.tiles2d.AdvancedTileCache;
+
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -42,7 +45,7 @@ public abstract class AbstractLoaderWorker<Q extends Query, R extends DataResour
 	/**
 	 * The cache this worker should use
 	 */
-	private Cache<R> cache;
+	private AdvancedCache<String, R> cache;
 	
 	/**
 	 * Flag if this worker was already evaluated by its loader.
@@ -64,7 +67,7 @@ public abstract class AbstractLoaderWorker<Q extends Query, R extends DataResour
 	 * @param cache The cache this worker should use or <code>null</code> if no cache
 	 * should be used.
 	 */
-	public AbstractLoaderWorker(Q subQuery, Cache<R> cache) {
+	public AbstractLoaderWorker(Q subQuery, AdvancedCache<String, R> cache) {
 		super();
 		this.subQuery = subQuery;
 		this.cache = cache;
@@ -107,7 +110,7 @@ public abstract class AbstractLoaderWorker<Q extends Query, R extends DataResour
 	 * @return The cache this worker should use or <code>null</code> if no cache
 	 * should be used.
 	 */
-	protected Cache<R> getCache() {
+	protected AdvancedCache<String, R> getCache() {
 		return cache;
 	}
 

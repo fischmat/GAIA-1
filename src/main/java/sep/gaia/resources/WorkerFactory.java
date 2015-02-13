@@ -17,12 +17,18 @@
  */
 package sep.gaia.resources;
 
+import sep.gaia.resources.caching.AdvancedCache;
+
+import java.io.Serializable;
+
 /**
  * Class for generating new workers. This functionality is used by <code>AbstractLoader</code>
  * when a query was split and will be processed. Implement this interface when defining own
  * loaders and corresponding workers.
  * @author Matthias Fisch
  *
+ * @param <Q> The type of queries the generated workers should process,
+ * @param <R> The type of resources the worker should load.
  */
 public interface WorkerFactory<Q extends Query, R extends DataResource> {
 
@@ -32,5 +38,5 @@ public interface WorkerFactory<Q extends Query, R extends DataResource> {
 	 * @param cache The cache the created worker should use.
 	 * @return The created worker.
 	 */
-	public AbstractLoaderWorker<Q, R> createWorker(Q query, Cache<R> cache);
+	public AbstractLoaderWorker<Q, R> createWorker(Q query, AdvancedCache<String, R> cache);
 }
