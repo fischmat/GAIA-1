@@ -17,6 +17,7 @@
  */
 package sep.gaia.resources.poi;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import sep.gaia.resources.DataResource;
@@ -32,7 +33,7 @@ import sep.gaia.util.FloatBoundingBox;
  * @author Matthias Fisch
  *
  */
-public class POIQuery extends Query {
+public class POIQuery extends Query implements Serializable {
 
 	/**
 	 * The geographical area to retrieve POIs for.

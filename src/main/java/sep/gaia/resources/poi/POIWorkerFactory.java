@@ -20,6 +20,7 @@ package sep.gaia.resources.poi;
 import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
 import sep.gaia.resources.WorkerFactory;
+import sep.gaia.resources.caching.AdvancedCache;
 
 /**
  * Class for generating new workers. This functionality is used by the Loader-instance
@@ -35,7 +36,7 @@ public class POIWorkerFactory implements WorkerFactory<POIQuery, PointOfInterest
 	 */
 	@Override
 	public AbstractLoaderWorker<POIQuery, PointOfInterest> createWorker(
-			POIQuery query, Cache<PointOfInterest> cache) {
+			POIQuery query, AdvancedCache<String, PointOfInterest> cache) {
 		return new POILoaderWorker(query, cache);
 	}
 

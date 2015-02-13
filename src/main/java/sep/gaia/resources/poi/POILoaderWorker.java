@@ -54,6 +54,7 @@ import org.xml.sax.SAXException;
 
 import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.util.FloatBoundingBox;
 import sep.gaia.util.FloatVector3D;
 import sep.gaia.util.Logger;
@@ -79,11 +80,14 @@ public class POILoaderWorker extends AbstractLoaderWorker<POIQuery, PointOfInter
 	 * @param subQuery The part of a query this worker has to process.
 	 * @param cache The cache to check before loading POIs.
 	 */
-	public POILoaderWorker(POIQuery subQuery, Cache<PointOfInterest> cache) {
+	public POILoaderWorker(POIQuery subQuery, AdvancedCache<String, PointOfInterest> cache) {
 		super(subQuery);
+		// TODO Reenable cache:
+		/*
 		if(cache instanceof POICache) {
 			this.cache = (POICache) cache;
 		}
+		*/
 	}
 
 	/**

@@ -115,7 +115,8 @@ public class POIManager extends DataResourceManager<PointOfInterest> implements 
 		WorkerFactory<POIQuery, PointOfInterest> factory = new POIWorkerFactory();
 
 		// Create the loader itself and pass the created objects
-		loader = new Loader<>(cache, factory, null); // Create the loader itself and pass the created objects
+		// TODO Reenable caching functionality:
+		loader = new Loader<>(null, factory, null); // Create the loader itself and pass the created objects
 		
 		loader.addListener(this);
 		
