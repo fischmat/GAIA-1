@@ -139,7 +139,6 @@ public class Location extends DataResource {
 
 	@Override
 	public String getKey() {
-		
 		return this.name + this.getTimestamp();
 	}
 }

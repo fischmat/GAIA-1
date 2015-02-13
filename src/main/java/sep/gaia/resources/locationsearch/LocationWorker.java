@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import sep.gaia.resources.AbstractLoaderWorker;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.util.Logger;
 
 /**
@@ -78,7 +79,6 @@ public class LocationWorker extends
 	public void run() {
 		LocationQuery query = getSubQuery();
 
-		//
 		if (query == null || query.getSearch() == null
 				|| query.getSearch().isEmpty()) {
 			// Nothing to do.
@@ -123,8 +123,8 @@ public class LocationWorker extends
 						.getTextContent());
 				float[] coords = { lon, lat };
 				
-				String country = "";
-				for (int j = 1; j < nodePlace.getLength(); j++) {
+				String country = null;
+				for (int j = 1; j < nodePlace.getLength() && country == null; j++) {
 					if (nodePlace.item(i).getNodeName().toString().equals("country")) {
 						country = nodePlace.item(i).getNodeValue();
 					}
@@ -148,6 +148,9 @@ public class LocationWorker extends
 					"Malformed request URI for Nominatim location search: "
 							+ requestURI);
 		}
+
+		// Add the found locations to the cache:
+
 
 		this.setResults(locations);
 	}

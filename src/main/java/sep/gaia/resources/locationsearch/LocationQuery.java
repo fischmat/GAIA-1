@@ -50,7 +50,7 @@ public class LocationQuery extends Query {
 	 * 
 	 * @param resource The <code>Location</code> to be searched for.
 	 * 
-	 * @param search The name of the <code>Location</code> to be searched for.
+	 * @param searchString The name of the <code>Location</code> to be searched for.
 	 * 
 	 * @throws NotADummyException Thrown if <code>resource</code> has not been
 	 * filled with appropriate values after the loading process.

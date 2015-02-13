@@ -20,6 +20,7 @@ package sep.gaia.resources.locationsearch;
 import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
 import sep.gaia.resources.WorkerFactory;
+import sep.gaia.resources.caching.AdvancedCache;
 
 /**
  * This class is to generate new workers necessary to initialize the 
@@ -34,7 +35,7 @@ public class LocationWorkerFactory implements WorkerFactory<LocationQuery, Locat
 
 	@Override
 	public AbstractLoaderWorker<LocationQuery, Location> createWorker(
-			LocationQuery query, Cache<Location> cache) {
+			LocationQuery query, AdvancedCache<String, Location> cache) {
 		return new LocationWorker(query);
 	}
 
