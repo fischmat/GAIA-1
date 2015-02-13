@@ -17,6 +17,8 @@
  */
 package sep.gaia.util;
 
+import java.io.Serializable;
+
 /**
  * Interface for a general 2-dimensional rectangle, of which the
  * corners are represented by instances of classes that implement
@@ -27,7 +29,7 @@ package sep.gaia.util;
  * @author Max Witzelsperger
  *
  */
-public interface BoundingBox {
+public interface BoundingBox extends Serializable {
 
 	/**
 	 * Gets the upper left coordinate of <code>this</code>.
