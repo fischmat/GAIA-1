@@ -23,8 +23,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 
 import sep.gaia.resources.ResourceMaster;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.resources.tiles2d.TileCache;
 import sep.gaia.resources.tiles2d.TileManager;
+import sep.gaia.resources.tiles2d.TileResource;
 
 /**
  * This is to implement the <code>ActionListener</code> Interface to check if
@@ -59,8 +61,8 @@ public class CacheSettingsListener implements ActionListener {
 		
 		TileManager manager = (TileManager) ResourceMaster.getInstance().getResourceManager(TileManager.MANAGER_LABEL);
 		
-		TileCache cache = manager.getCache();
-		cache.clear();
+		AdvancedCache<String, TileResource> cache = manager.getCache();
+		// TODO: cache.clear();
 	}
 
 	

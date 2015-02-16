@@ -23,8 +23,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import sep.gaia.resources.ResourceMaster;
+import sep.gaia.resources.caching.CacheRemovalStrategy;
+import sep.gaia.resources.caching.strategies.OrderedRemovalStrategy;
+import sep.gaia.resources.tiles2d.AdvancedTileCache;
 import sep.gaia.resources.tiles2d.TileCache;
 import sep.gaia.resources.tiles2d.TileManager;
+import sep.gaia.resources.tiles2d.TileResource;
 
 
 /**
@@ -37,14 +41,12 @@ import sep.gaia.resources.tiles2d.TileManager;
 public class SliderListener implements ChangeListener {
 
 	private static final long MEGABYTE_TO_BYTE = 1024 * 1024;
-	
+
 	/**
 	 * the current size of the cache, which is to be set to 0 when the maximum
 	 * cache size changes
 	 */
 	private JLabel cacheSize;
-	
-	private static long maximumSizeOnDisk;
 	
 	/**
 	 * Constructs a new <code>SliderListener</code>, which changes the size
@@ -66,18 +68,15 @@ public class SliderListener implements ChangeListener {
 
 		JSlider source = (JSlider)c.getSource();
 		TileManager manager = (TileManager) ResourceMaster.getInstance().getResourceManager(TileManager.MANAGER_LABEL);
-		
-		TileCache cache = manager.getCache();
-		cache.setMaximumSizeOnDisk(source.getValue() * MEGABYTE_TO_BYTE);
-		this.cacheSize.setText("0");
-		cache.clear();
-		
-		cache.manage();
-		SliderListener.maximumSizeOnDisk = source.getValue();
-	}
-	
-	public static long getMaximum() {
-		return maximumSizeOnDisk;
+
+		AdvancedTileCache cache = manager.getCache();
+		CacheRemovalStrategy<String, TileResource> strategy = cache.getRemovalStrategy();
+
+		if(strategy instanceof OrderedRemovalStrategy) {
+			((OrderedRemovalStrategy<String, TileResource>) strategy).setThreshold(source.getValue());
+		}
+
+		cacheSize.setText(Integer.toString(cache.getCachedResourcesCount()));
 	}
 
 }
