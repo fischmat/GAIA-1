@@ -39,6 +39,7 @@ import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
 import sep.gaia.resources.DataResource;
 import sep.gaia.resources.Query;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.resources.tiles2d.TileResource;
 
 /**
@@ -60,7 +61,7 @@ public class WikipediaLoaderWorker extends AbstractLoaderWorker<Query, Wikipedia
 	 * 
 	 * @param subQuery The query, which this thread has to treat.
 	 */
-	public WikipediaLoaderWorker(Query subQuery, Cache<WikipediaData> cache) {
+	public WikipediaLoaderWorker(Query subQuery, AdvancedCache<String, WikipediaData> cache) {
 		super(subQuery, cache);
 	}
 	
@@ -101,11 +102,12 @@ public class WikipediaLoaderWorker extends AbstractLoaderWorker<Query, Wikipedia
 				            
 				            data.setSummaryText(summary);
 							
-							Cache<WikipediaData> cache = getCache();
+							AdvancedCache<String, WikipediaData> cache = getCache();
 							dummy.setDummy(false);
 							data.setDummy(false);
 							wikiResources.add(data);
-							cache.add(data);
+							// TODO: Reenable Wikipedia caching
+							// cache.add(data);
 						} else {
 							wikiResources = null;
 						}

@@ -32,6 +32,7 @@ import jogamp.opengl.util.pngj.PngjException;
 import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
 import sep.gaia.resources.DataResource;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.util.IntegerVector3D;
 import sep.gaia.util.Logger;
 
@@ -62,7 +63,7 @@ public class TileLoaderWorker extends AbstractLoaderWorker<TileQuery, TileResour
 	 * @param profile The OpenGL-profile to use when loading texture-data.
 	 * @param cache The cache to use for querying cached tiles.
 	 */
-	public TileLoaderWorker(TileQuery subQuery, GLProfile profile, Cache<TileResource> cache) {
+	public TileLoaderWorker(TileQuery subQuery, GLProfile profile, AdvancedCache<String, TileResource> cache) {
 		super(subQuery, cache);
 		this.profile = profile;
 	}
@@ -107,9 +108,9 @@ public class TileLoaderWorker extends AbstractLoaderWorker<TileQuery, TileResour
 					
 					// Check if present in cache:
 					boolean cacheHit = false;
-					Cache<TileResource> cache = getCache();
+					AdvancedCache<String, TileResource> cache = getCache();
 					if(cache != null) {
-						TileResource result = cache.get(tile.getKey());
+						TileResource result = cache.getResourceByKey(tile.getKey());
 						if(result != null) {
 							results.add(result);
 							cacheHit = true;

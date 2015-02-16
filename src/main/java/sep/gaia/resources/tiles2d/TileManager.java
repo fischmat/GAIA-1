@@ -50,6 +50,7 @@ import sep.gaia.resources.DataResourceManager;
 import sep.gaia.resources.Loader;
 import sep.gaia.resources.LoaderEventListener;
 import sep.gaia.resources.QuerySplitter;
+import sep.gaia.resources.caching.AdvancedCache;
 import sep.gaia.resources.tiles2d.Style.SubServer;
 import sep.gaia.state.AbstractStateManager.StateType;
 import sep.gaia.state.GLState;
@@ -57,6 +58,7 @@ import sep.gaia.state.State;
 import sep.gaia.state.StateManager;
 import sep.gaia.util.AlgoUtil;
 import sep.gaia.util.IntegerBoundingBox;
+import sep.gaia.util.Logger;
 
 /**
  * <code>StateObservable</code>: <code>TileManager</code> is responsible for the
@@ -114,7 +116,7 @@ public final class TileManager extends DataResourceManager<TileResource>
 
 	private static final int PRELOAD_COUNT = 3;
 
-	private TileCache cache;
+	private AdvancedTileCache cache;
 
 	/**
 	 * The style current used - specifies also the API server(s) that are
@@ -156,14 +158,13 @@ public final class TileManager extends DataResourceManager<TileResource>
 	public TileManager(GLProfile glProfile) {
 		super(MANAGER_LABEL, false, false);
 
-		this.cache = new TileCache(this, glProfile);
+		this.cache = new AdvancedTileCache(glProfile, 1000);
 
 		/*
 		 * A loader must be created for performing queries for tiles. Also it
 		 * will use a TileCache as a on-disk-cache.
 		 */
-		loader = new Loader<TileQuery, TileResource>(this.cache,
-				new TileWorkerFactory(glProfile), this);
+		loader = new Loader<>(this.cache, new TileWorkerFactory(glProfile), this);
 
 		loader.addListener(this); // Listen for new data available
 
@@ -174,7 +175,7 @@ public final class TileManager extends DataResourceManager<TileResource>
 
 	/**
 	 * Initializes a tile-manager using a persistent cache.
-	 * 
+	 *
 	 * @param glProfile
 	 *            The OpenGL-Profile to use.
 	 */
@@ -185,11 +186,9 @@ public final class TileManager extends DataResourceManager<TileResource>
 		 * A loader must be created for performing queries for tiles. Also it
 		 * will use a TileCache as a on-disk-cache.
 		 */
-		TileCache cache = new TileCache(this, glProfile);
-		cache.setMaxEntries(maximumCacheSize);
+		cache = new AdvancedTileCache(glProfile, maximumCacheSize);
 
-		loader = new Loader<TileQuery, TileResource>(cache,
-				new TileWorkerFactory(glProfile), this);
+		loader = new Loader<>(cache, new TileWorkerFactory(glProfile), this);
 
 		loader.addListener(this); // Listen for new data available
 
@@ -506,12 +505,17 @@ public final class TileManager extends DataResourceManager<TileResource>
 	@Override
 	public void onExit() {
 		if (loader != null) {
-			Cache<TileResource> cache = loader.getCache();
-			if (cache instanceof TileCache) {
-				TileCache tileCache = (TileCache) cache;
+			AdvancedCache<String, TileResource> cache = loader.getCache();
+			if (cache instanceof AdvancedTileCache) {
+				AdvancedTileCache tileCache = (AdvancedTileCache) cache;
 				if (tileCache != null) {
-					// Write the caches index-file:
-					tileCache.writeBack();
+
+					try {
+						tileCache.dump();
+					} catch (IOException e) {
+						Logger.getInstance().error(e.getMessage());
+					}
+
 				}
 			}
 		}
@@ -557,7 +561,7 @@ public final class TileManager extends DataResourceManager<TileResource>
 		return currentStyle;
 	}
 
-	public TileCache getCache() {
+	public AdvancedTileCache getCache() {
 		return cache;
 	}
 	

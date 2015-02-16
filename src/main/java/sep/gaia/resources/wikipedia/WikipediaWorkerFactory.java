@@ -21,6 +21,8 @@ import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
 import sep.gaia.resources.Query;
 import sep.gaia.resources.WorkerFactory;
+import sep.gaia.resources.caching.AdvancedCache;
+import sep.gaia.resources.tiles2d.AdvancedTileCache;
 
 /**
  * This class generates <code>WikipediaLoaderWorker</code> objects.
@@ -32,7 +34,7 @@ public class WikipediaWorkerFactory implements WorkerFactory<Query, WikipediaDat
 
 	@Override
 	public AbstractLoaderWorker<Query, WikipediaData> createWorker(Query query,
-			Cache<WikipediaData> cache) {
+			AdvancedCache<String, WikipediaData> cache) {
 		return new WikipediaLoaderWorker(query, cache);
 	}
 

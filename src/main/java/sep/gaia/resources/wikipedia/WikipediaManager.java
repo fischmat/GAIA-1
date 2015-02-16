@@ -72,7 +72,8 @@ public class WikipediaManager extends DataResourceManager<WikipediaData> impleme
 	public WikipediaManager() {
 		super("Wikipedia");
 		cache = new WikipediaCache();
-		loader = new Loader<Query, WikipediaData>(cache, new WikipediaWorkerFactory(), null);
+		// TODO Renable cache:
+		loader = new Loader<Query, WikipediaData>(null, new WikipediaWorkerFactory(), null);
 		currentWikis = new HashSet<WikipediaData>();
 		loader.addListener(this);
 		loader.start();

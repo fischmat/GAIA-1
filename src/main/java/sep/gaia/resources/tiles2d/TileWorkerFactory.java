@@ -23,6 +23,7 @@ import sep.gaia.resources.AbstractLoaderWorker;
 import sep.gaia.resources.Cache;
 import sep.gaia.resources.Query;
 import sep.gaia.resources.WorkerFactory;
+import sep.gaia.resources.caching.AdvancedCache;
 
 /**
  * Creates <code>TileLoaderWorker</code> objects.
@@ -47,7 +48,7 @@ public class TileWorkerFactory implements WorkerFactory<TileQuery, TileResource>
 
 	@Override
 	public AbstractLoaderWorker<TileQuery, TileResource> createWorker(
-			TileQuery query, Cache<TileResource> cache) {
+			TileQuery query, AdvancedCache<String, TileResource> cache) {
 		return new TileLoaderWorker(query, profile, cache);
 	}
 

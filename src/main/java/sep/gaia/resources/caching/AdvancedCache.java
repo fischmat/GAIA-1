@@ -309,12 +309,7 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
             index.put(key, new CacheEntry<>(resource, getNextTimestamp()));
         }
 
-        // Now gain all other usage rights and invoke the removal-strategy:
-        if(removalStrategy != null) {
-            currentTimeInUseLock.lock();
-            removalStrategy.manageCache(this);
-            currentTimeInUseLock.unlock();
-        }
+        invokeRemoval();
 
 
         indexInUseLock.unlock();
@@ -511,6 +506,22 @@ public class AdvancedCache<K extends Serializable, R extends DataResource> {
             this.compressionLevel = compressionLevel;
         } else {
             this.compressionLevel = Deflater.DEFAULT_COMPRESSION;
+        }
+    }
+
+
+    /**
+     * Invokes the caches removal strategies management-routine and ensures that all rights for accessing the caches
+     * members from the calling thread are granted.
+     */
+    protected void invokeRemoval() {
+        // Now gain all other usage rights and invoke the removal-strategy:
+        if(removalStrategy != null) {
+            indexInUseLock.lock();
+            currentTimeInUseLock.lock();
+            removalStrategy.manageCache(this);
+            currentTimeInUseLock.unlock();
+            indexInUseLock.unlock();
         }
     }
 

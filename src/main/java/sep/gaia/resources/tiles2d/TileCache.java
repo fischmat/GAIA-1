@@ -79,6 +79,8 @@ import com.jogamp.opengl.util.texture.TextureIO;
  * "GAIA Tile Resource".
  * 
  * @author Johannes Bauer (specification), Matthias Fisch (implementation)
+ *
+ * @deprecated
  */
 public class TileCache extends Cache<TileResource> {
 
@@ -187,7 +189,7 @@ public class TileCache extends Cache<TileResource> {
 	/**
 	 * The maximum size of image-files of all styles in bytes.
 	 */
-	private long maximumSizeOnDisk = SliderListener.getMaximum();
+	private long maximumSizeOnDisk;
 
 	/**
 	 * Initializes the cache with the management-objects for the tiles to cache, as well
