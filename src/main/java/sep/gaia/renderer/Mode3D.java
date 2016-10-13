@@ -151,7 +151,8 @@ public class Mode3D extends RenderMode {
 	
 	private void loadSkydomeTexture() {
 		try {
-			skydomeTexture = TextureIO.newTexture(new File("res/skydome.png"), false);
+			File skydomeImageFile = new File("res/skydome.png");
+			skydomeTexture = TextureIO.newTexture(skydomeImageFile, false);
 		} catch (GLException | IOException e) {
 			Logger.getInstance().error("Error loading skydome-texture: " + e.getMessage());
 		}
