@@ -41,19 +41,35 @@ public class IconFactory {
 	/**
 	 * Creates a new ImageIcon for the passed icon name.
 	 * 
-	 * @param pathToImage
+	 * @param imageURL
 	 *            The path to the Icons (which are included in it)
 	 * @return The new ImageIcon
 	 */
 	public static ImageIcon createIcon(String imageURL) {
-		if (imageURL != null && !imageURL.toString().isEmpty()) {
+		if (imageURL != null && !imageURL.isEmpty()) {
 			return (new ImageIcon(imageURL));
 		} else {
 			Logger.getInstance().error("Couldn't find icon at " + imageURL);
 			return null;
 		}
-		
-		
+	}
+
+	/**
+	 * Creates a new ImageIcon for the buttons
+	 *
+	 * @param pathToImage The path to the Icons (which are included in it)
+	 * @param shortDescription The short description of the usage of the
+	 * corresponding object
+	 * @return The new ImageIcon
+	 */
+	public static ImageIcon createIcon(String pathToImage, String shortDescription) {
+		File imageFile = new File(pathToImage);
+		if(imageFile.exists()) {
+			return new ImageIcon(pathToImage, shortDescription);
+		} else {
+			Logger.getInstance().error("Couldn't find icon at " + pathToImage);
+			return null;
+		}
 	}
 
 	public static Image createImage(String imageURL) {

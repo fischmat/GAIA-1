@@ -66,7 +66,7 @@ public class GAIAToolBar extends JPanel {
 		JPanel rightTools = new JPanel(new FlowLayout());
 		
 		// Marker show button.
-		ImageIcon markerListIcon = createIcon(
+		ImageIcon markerListIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.MARKER_LIST_ICON),
 				"Eigene Orte anzeigen/verstecken");
 		JButton markerPanelVisibilityButton = new JButton(markerListIcon);
@@ -75,7 +75,7 @@ public class GAIAToolBar extends JPanel {
 				.addActionListener(new ComponentHideListener(markerPanel));
 
 		// POI show button.
-		ImageIcon poibarIcon = createIcon(
+		ImageIcon poibarIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.POI_BAR_ICON),
 				"POI bar anzeigen/verstecken");
 		JButton poiBarVisibilityButton = new JButton(poibarIcon);// "res/icon16/poibar.png"));
@@ -84,7 +84,7 @@ public class GAIAToolBar extends JPanel {
 				poiBar));
 
 		// Weather button.
-		ImageIcon weatherIcon = createIcon(
+		ImageIcon weatherIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.WEATHER_ICON),
 				"Wetter anzeigen/verstecken");
 		JButton weatherButton = new JButton(weatherIcon);
@@ -92,7 +92,7 @@ public class GAIAToolBar extends JPanel {
 		weatherButton.setToolTipText("Wetter anzeigen/ausblenden");
 
 		// Screenshot button.
-		ImageIcon screenshotIcon = createIcon(
+		ImageIcon screenshotIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.SCREENSHOT_ICON),
 				"Screenshot des Kartenausschnitts erstellen");
 		JButton screenshotButton = new JButton(screenshotIcon);// "res/icon16/screenshot.png"));
@@ -100,14 +100,14 @@ public class GAIAToolBar extends JPanel {
 		screenshotButton.addActionListener(new ScreenshotToolbarListener(screenshotLayer));
 
 		// Marker button.
-		ImageIcon markerIcon = createIcon(
+		ImageIcon markerIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.MARKER_LIST_ICON),
 				"Markieren von Orten");
 		JButton markerButton = new JButton(markerIcon);
 		markerButton.setToolTipText("Marker setzen");
 		markerButton.addActionListener(new MarkerToolbarListener(glState, markerPanel));
 
-		ImageIcon cwIcon = createIcon(
+		ImageIcon cwIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.ROTATE_COUNTERCLOCKWISE_ICON), "Karte im Uhrzeigersinn drehen");
 		JButton rotateClockwiseButton = new JButton(cwIcon);
 		rotateClockwiseButton.setToolTipText("Karte im Uhrzeigersinn drehen");
@@ -121,7 +121,7 @@ public class GAIAToolBar extends JPanel {
 			}
 		});
 
-		ImageIcon ccwIcon = createIcon(
+		ImageIcon ccwIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.ROTATE_COUNTERCLOCKWISE_ICON), "Karte gegen den Uhrzeigersinn drehen");
 		JButton rotateCounterClockwiseButton = new JButton(ccwIcon);
 		rotateCounterClockwiseButton.setToolTipText("Karte gegen den Uhrzeigersinn drehen");
@@ -135,25 +135,25 @@ public class GAIAToolBar extends JPanel {
 			}
 		});
 		
-		ImageIcon upIcon = createIcon(
+		ImageIcon upIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.ROTATE_UP_ICON), "Karte oben um die X Achse drehen");
 		JButton rotateUpXButton = new JButton(upIcon);
 		rotateUpXButton.setToolTipText("Karte nach vorne kippen");
 		rotateUpXButton.addActionListener(new RotationUpListener(glState));
-		ImageIcon downIcon = createIcon(
+		ImageIcon downIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.ROTATE_DOWN_ICON), "Karte unten um die X Achse drehen");
 		JButton rotateDownXButton = new JButton(downIcon);
 		rotateDownXButton.setToolTipText("Karte nach hinten kippen");
 		rotateDownXButton.addActionListener(new RotationDownListener(glState));
 		// Zoom out button.
-		ImageIcon zoomOutIcon = createIcon(
+		ImageIcon zoomOutIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.ZOOM_NEG), "Hinauszoomen");
 		JButton zoomOutButton = new JButton(zoomOutIcon);
 		zoomOutButton.setToolTipText("Hinauszoomen");
 		zoomOutButton.addActionListener(new ZoomOutListener(glState));
 
 		// Zoom in button.
-		ImageIcon zoomInIcon = createIcon(
+		ImageIcon zoomInIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.ZOOM_POS), "Hineinzoomen");
 		JButton zoomInButton = new JButton(zoomInIcon);
 		zoomInButton.setToolTipText("Hineinzoomen");
@@ -175,7 +175,7 @@ public class GAIAToolBar extends JPanel {
 				((JTextField) e.getSource()).setText("");
 			}
 		});
-		ImageIcon searchIcon = createIcon(
+		ImageIcon searchIcon = IconFactory.createIcon(
 				env.getString(Environment.EnvVariable.SEARCH_ICON), "Suchen nach Orten");
 		JButton searchButton = new JButton(searchIcon);// "res/icon16/search.png"));
 		searchButton.setToolTipText("Ortssuche starten");
@@ -204,24 +204,5 @@ public class GAIAToolBar extends JPanel {
 		add(rightTools, BorderLayout.EAST);
 
 		setVisible(true);
-	}
-
-	/**
-	 * Creates a new ImageIcon for the buttons
-	 * 
-	 * @param pathToImage
-	 *            The path to the Icons (which are included in it)
-	 * @param shortDescription
-	 *            The short description of the usage of the corresponding button
-	 * @return The new ImageIcon
-	 */
-	protected ImageIcon createIcon(String pathToImage, String shortDescription) {
-		java.net.URL imageURL = Gaia.class.getClassLoader().getResource(pathToImage);
-		if (imageURL != null) {
-			return new ImageIcon(imageURL, shortDescription);
-		} else {
-			System.err.println("Couldn't find the image.\n" + imageURL);
-			return null;
-		}
 	}
 }

@@ -50,7 +50,7 @@ public class AboutWindow {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
-        ImageIcon imageIcon = createIcon("/sep/gaia/renderer/icons/About.png", "Logo");
+        ImageIcon imageIcon = IconFactory.createIcon("/sep/gaia/renderer/icons/About.png", "Logo");
         JLabel image = new JLabel(imageIcon);
         
         JLabel version = new JLabel(Environment.getInstance().getString(EnvVariable.VERSION_STRING));
@@ -80,23 +80,5 @@ public class AboutWindow {
         about.getContentPane().add(panel);
         about.setModal(true);
         about.setVisible(true);
-	}
-	
-	/**
-	 * Creates a new ImageIcon for the buttons
-	 * 
-	 * @param pathToImage The path to the Icons (which are included in it)
-	 * @param shortDescription The short description of the usage of the
-	 * corresponding object
-	 * @return The new ImageIcon
-	 */
-	protected ImageIcon createIcon(String pathToImage, String shortDescription) {
-	    java.net.URL imageURL = getClass().getResource(pathToImage);
-	    if (imageURL != null) {
-	        return new ImageIcon(imageURL, shortDescription);
-	    } else {
-	        System.err.println("Couldn't find the image.");
-	        return null;
-	    }
 	}
 }
