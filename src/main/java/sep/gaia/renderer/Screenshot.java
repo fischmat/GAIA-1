@@ -142,9 +142,17 @@ public class Screenshot {
 
 		// Prepare new file for saving the screenshot.
 		Date date = new Date();
-		final File destination = new File(Environment.getInstance().getString(
-				Environment.EnvVariable.SCREENSHOT_FOLDER)
-				+ System.getProperty("file.separator")
+		File screenshotFolder = new File(Environment.getInstance().getString(
+												Environment.EnvVariable.SCREENSHOT_FOLDER));
+
+		if(!screenshotFolder.exists()) {
+			screenshotFolder.mkdirs();
+		} else if(!screenshotFolder.isDirectory()) {
+			Logger.getInstance().error(screenshotFolder.getAbsolutePath() + " must be a directory.");
+			return;
+		}
+
+		final File destination = new File(screenshotFolder.getAbsoluteFile() + System.getProperty("file.separator")
 				+ dateFormat.format(date) + ".png");
 
 		// Get image data from opengl.

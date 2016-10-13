@@ -2,6 +2,7 @@ target/
 icon/
 icons/
 log.txt
+screenshots
 
 *~
 *.class
