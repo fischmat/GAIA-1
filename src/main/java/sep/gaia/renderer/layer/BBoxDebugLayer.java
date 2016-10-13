@@ -19,8 +19,6 @@ package sep.gaia.renderer.layer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLException;
@@ -48,8 +46,8 @@ public class BBoxDebugLayer extends AbstractLayer {
 	
 	private void loadTextures() {
 		try {
-			texUpperLeft = TextureIO.newTexture(new File("res/bboxdbg_ul.png"), false);
-			texLowerRight = TextureIO.newTexture(new File("res/bboxdbg_lr.png"), false);
+			texUpperLeft = TextureIO.newTexture(new File("/bboxdbg_ul.png"), false);
+			texLowerRight = TextureIO.newTexture(new File("/bboxdbg_lr.png"), false);
 			
 			texturesLoaded = true;
 			

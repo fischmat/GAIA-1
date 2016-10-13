@@ -50,7 +50,7 @@ public class ScreenshotToolbarListener implements ActionListener {
 	
 	 public void playSound() {
 	        try {
-	            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("res/camera.wav"));
+	            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("/camera.wav"));
 	            Clip clip = AudioSystem.getClip( );
 	            clip.open(audioInputStream);
 	            clip.start( );

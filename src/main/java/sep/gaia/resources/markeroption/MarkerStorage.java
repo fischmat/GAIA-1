@@ -102,7 +102,7 @@ public class MarkerStorage {
 				
 				// Load the current xml file
 				File file = new File(
-						"./config/markerFile.xml");
+                        "config/markerFile.xml");
 				DocumentBuilder builder = DocumentBuilderFactory.newInstance()
 						.newDocumentBuilder();
 				Document doc = builder.parse(file);
@@ -197,7 +197,7 @@ public class MarkerStorage {
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
 			StreamResult res = new StreamResult(new File(
-					"./config/markerFile.xml"));
+                    "config/markerFile.xml"));
 			transformer.transform(source, res);
 			return true;
 		} catch (ParserConfigurationException pce) {
